@@ -1,0 +1,133 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+getwd()
+
+### Using Titanic data to show missing values and remove them ###
+
+#Importing dataset
+tit_df <- read.csv("titanic-Dataset.csv")
+
+#Print the Structure of the dataset
+str(tit_df)
+
+#List the variables of the dataset
+names(tit_df)
+
+#Print the top 15 rows of the dataset
+head(tit_df, n=15)
+
+#Remove missing values in the dataset
+sum(is.na(tit_df))
+
+tit_df <- na.omit(tit_df)
+sum(is.na(tit_df))
+
+#Identify and remove duplicate data in the dataset
+sum(duplicated(tit_df))
+
+head(tit_df[!duplicated(tit_df),],n=30)
+
+
+
+### Using Mall data for all other questions ###
+
+#Importing data
+mall_df <- read.csv("Mall_Customers.csv")
+
+#Print the Structure of the dataset
+str(mall_df)
+
+#List the variables of the dataset
+names(mall_df)
+
+#Print the top 15 rows of the dataset
+head(mall_df, n=15)
+
+#Write a user defined function using any of the variables from the data set.
+#Find monthly income of customer
+get_monthly_income = function(annual_k) {
+monthly <- annual_k / 12
+return(monthly)
+}
+mall_df$Monthly_Income_k <- get_monthly_income(mall_df$Annual.Income..k..)
+head(mall_df[, c("Annual.Income..k..", "Monthly_Income_k")], n=25)
+
+#Use data manipulation techniques and filter rows based on any
+#logical criteria that exist in your dataset.
+#Filter for young high-spenders and sort them by income, Age < 30
+#and Spending Score > 70
+young_high_spenders <- mall_df[mall_df$Age < 30 & mall_df$Spending.Score..1.100. > 70, ]
+head(young_high_spenders, n=25)
+
+#Reorder multiple rows in descending order
+mall_sorted <- mall_df[order(-mall_df$Annual.Income..k..), ]
+head(mall_sorted, n = 25)
+
+#Rename some of the column names in your dataset
+names(mall_df)[4] <- "Annual_Income"
+names(mall_df)[5] <- "Spending_Score"
+mall_sorted <- mall_df[order(-mall_df$Annual_Income), ]
+head(mall_sorted, 10)
+
+#Add new variables in your data frame by using a mathematical function
+#Quarterly income
+mall_df$Quarterly_Income <- mall_df$Monthly_Income_k*4
+head(mall_df,5)
+
+#Create a training set using random number generator engine
+#Initialize seed
+set.seed(123)
+
+#Determine sample size (75% for training)
+data_size <- nrow(mall_df)
+train_size <- floor(0.75 * data_size)
+
+#Generate random row indices for training
+#sample() picks 'train_size' unique integers from 1 to 'data_size'
+train_indices <- sample(seq_len(data_size), size = train_size)
+
+#Split the data
+train_set <- mall_df[train_indices, ]  #Select the random rows
+
+#Print the summary statistics of your dataset
+summary(mall_df)
+
+#Use any of the numerical variables from the dataset and perform the following statistical  functions
+mean(mall_df$Annual_Income) #Mean
+median(mall_df$Annual_Income) #Median
+
+#Mode Function
+#install.packages("modeest")
+library(modeest)
+mfv(mall_df$Annual_Income) #Mode
+
+#User defined Mode function
+malldf_mode <- function(x) {
+  uniq_x <- unique(x)
+  uniq_x[which.max(tabulate(match(x, uniq_x)))]
+}
+malldf_mode(mall_df$Annual_Income)
+
+
+range(mall_df$Annual_Income) #Range
+
+#Plot a scatter plot for any 2 variables in your dataset
+#install.packages("ggplot2")
+library(ggplot2)
+ggplot(mall_df, aes(x = Age, y = Annual_Income)) + 
+  geom_point()
+
+#Plot a bar plot for any 2 variables in your dataset 
+ggplot(mall_df, aes(x = Gender, y = Spending_Score)) +  geom_bar(stat="identity")
+
+#Find the correlation between any 2 variables by applying Pearson correlation
+corr_p <- cor(mall_df$Spending_Score, mall_df$Annual_Income, method = "pearson")
+print(corr_p)
+
+
+```
